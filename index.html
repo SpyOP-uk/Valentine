@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Deena 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #ff4d6d; --secondary: #ff85a1; }
+
+body {
+    margin: 0; font-family: 'Poppins', sans-serif;
+    background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; color: white; overflow: hidden;
+}
+
+#startScreen {
+    position: fixed; inset: 0; background: #ff4d6d;
+    z-index: 9999; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; transition: 0.8s;
+}
+
+.heart-icon {
+    font-size: 100px; cursor: pointer;
+    animation: pulse 1.2s infinite; filter: drop-shadow(0 0 20px white);
+}
+
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+.container {
+    background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px; border-radius: 30px; width: 85%; max-width: 400px;
+    margin-top: 60px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    z-index: 10; text-align: center;
+}
+
+h1 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; margin: 10px 0; }
+.btn {
+    background: var(--primary); color: white; border: none;
+    padding: 12px 25px; border-radius: 25px; font-weight: 600;
+    cursor: pointer; transition: 0.3s; margin-top: 15px;
+}
+
+#buttonContainer { position: relative; height: 300px; width: 100%; margin-top: 20px; }
+#noBtn { position: absolute; background: #333; z-index: 50; padding: 10px 20px; border-radius: 20px; border:none; color:white; }
+#yesBtn { position: absolute; left: 50%; top: 10%; transform: translateX(-50%) scale(1); z-index: 100; }
+
+.reasonText { height: 40px; color: #fff176; font-weight: 600; margin-bottom: 10px; font-size: 1.1rem; }
+
+#lovePopup {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+    background: white; color: #333; padding: 30px; border-radius: 30px;
+    width: 80%; max-width: 350px; z-index: 2000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+#lovePopup.show { transform: translate(-50%, -50%) scale(1); }
+
+/* Rising Heart Animation */
+.heart-particle { 
+    position: fixed; 
+    bottom: -50px; 
+    pointer-events: none; 
+    z-index: 1; 
+    animation-name: flyUp;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes flyUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="startScreen">
+    <div class="heart-icon" onclick="startAll()">💖</div>
+    <h2 style="font-family: 'Dancing Script';">A surprise for Deena...</h2>
+    <p>Tap the heart to enter</p>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+    <source src="https://www.chosic.com/wp-content/uploads/2021/04/Warm-Memories-Emotional-Inspiring-Piano.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+    <h1 id="typing"></h1>
+    
+    <div id="riddleBox">
+        <p>Where did we have our first kiss? 💋</p>
+        <input type="text" id="riddleAnswer" style="padding:12px; border-radius:10px; border:none; width:70%; text-align:center;" placeholder="Answer here...">
+        <br>
+        <button class="btn" onclick="checkRiddle()">Unlock 💖</button>
+        <p id="riddleMsg" style="margin-top:10px; color: #fff176;"></p>
+    </div>
+
+    <div id="proposalSection" style="display:none;">
+        <h1>Will You Be My Valentine?</h1>
+        <div class="reasonText" id="reasonText">Wait for it...</div>
+        <div id="buttonContainer">
+            <button id="yesBtn" class="btn">YES 😍</button>
+            <button id="noBtn" class="btn">NO 😏</button>
+        </div>
+    </div>
+</div>
+
+<div id="lovePopup">
+    <h2 style="color: var(--primary); font-family: 'Dancing Script'; font-size: 2.2rem;">My puntu ❤️</h2>
+    <p id="finalMessage" style="line-height: 1.6; font-size: 1.1rem;"></p>
+    <button class="btn" onclick="location.reload()">Forever & Always</button>
+</div>
+
+<script>
+const music = document.getElementById("bgMusic");
+const typingText = "Hi Deena... 💖";
+let textIdx = 0;
+
+function startAll() {
+    music.play().catch(() => {
+        console.log("Audio playback requires user interaction.");
+    });
+    document.getElementById("startScreen").style.opacity = "0";
+    setTimeout(() => document.getElementById("startScreen").style.display = "none", 800);
+    typeWriter();
+}
+
+function typeWriter() {
+    if (textIdx < typingText.length) {
+        document.getElementById("typing").innerHTML += typingText.charAt(textIdx);
+        textIdx++;
+        setTimeout(typeWriter, 150);
+    }
+}
+
+function checkRiddle() {
+    const val = document.getElementById("riddleAnswer").value.toLowerCase();
+    if (val.includes("unity") || val.includes("cafe")) {
+        document.getElementById("riddleBox").style.display = "none";
+        document.getElementById("proposalSection").style.display = "block";
+        document.getElementById("reasonText").innerHTML = "I knew you'd remember! 😉";
+    } else {
+        document.getElementById("riddleMsg").innerHTML = "Hint: It's in Bagbazar! Try again. 😏";
+    }
+}
+
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const reasonText = document.getElementById("reasonText");
+const container = document.getElementById("buttonContainer");
+const funnyMessages = ["Are you sure? 😳", "Try again Deena! 😂", "Error: Forbidden! 🚫", "My heart just broke... 💔", "Wrong button! 😜", "Think again! 🥺"];
+
+function moveNo() {
+    reasonText.innerHTML = funnyMessages[Math.floor(Math.random()*funnyMessages.length)];
+    const cWidth = container.offsetWidth - noBtn.offsetWidth;
+    const cHeight = container.offsetHeight - noBtn.offsetHeight;
+
+    // Get yes button position and size
+    const yesRect = yesBtn.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    
+    let nLeft, nTop;
+    let safe = false;
+    
+    while (!safe) {
+        nLeft = Math.random() * cWidth;
+        nTop = Math.random() * cHeight;
+        
+        // Check overlap with Yes button
+        const yesX = yesRect.left - containerRect.left;
+        const yesY = yesRect.top - containerRect.top;
+        const yesW = yesRect.width;
+        const yesH = yesRect.height;
+        
+        if (!(nLeft + noBtn.offsetWidth > yesX && nLeft < yesX + yesW &&
+              nTop + noBtn.offsetHeight > yesY && nTop < yesY + yesH)) {
+            safe = true;
+        }
+    }
+
+    noBtn.style.left = nLeft + "px";
+    noBtn.style.top = nTop + "px";
+
+    const currentScale = parseFloat(yesBtn.style.transform.replace('translateX(-50%) scale(', '').replace(')', '')) || 1;
+    yesBtn.style.transform = `translateX(-50%) scale(${currentScale + 0.15})`;
+}
+
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("touchstart", e => { e.preventDefault(); moveNo(); });
+
+yesBtn.addEventListener("click", () => {
+    const popup = document.getElementById("lovePopup");
+    const msg = "Thank you for everything. I promise that I will be there for you even when the world is ending.";
+    document.getElementById("finalMessage").innerText = msg;
+    popup.classList.add("show");
+    setInterval(spawnHearts, 100);
+});
+
+function spawnHearts() {
+    const h = document.createElement("div");
+    h.innerHTML = "❤️";
+    h.className = "heart-particle";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = (Math.random()*30+20) + "px";
+    h.style.animationDuration = (Math.random()*3+2) + "s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(), 5000);
+}
+</script>
+</body>
+</html>
